@@ -736,7 +736,10 @@
 		overlay.id = id;
 		overlay.textContent = flag;
 		overlay.style =
-			"position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:96px;opacity:0.08;pointer-events:none;user-select:none;filter:saturate(0.9);z-index:1;";
+			"position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-size:220px;opacity:0.11;pointer-events:none;user-select:none;filter:saturate(0.9);z-index:1;overflow:hidden;line-height:1;";
+		overlay.style.width = "100%";
+		overlay.style.height = "100%";
+		overlay.style.transform = "scale(1.1)";
 		tweet.appendChild(overlay);
 		tweet.dataset.xcbOverlayId = id;
 	}
@@ -866,14 +869,19 @@
 			tweet.dataset.xcbPrevPosition = tweet.style.position || "";
 			tweet.style.position = "relative";
 		}
-		tweet.style.setProperty("outline", "3px solid #ff4d4f", "important");
+		const palette = flagPalette(countryCode);
+		tweet.style.setProperty(
+			"outline",
+			`3px solid ${palette.primary}`,
+			"important",
+		);
 		tweet.style.setProperty("outline-offset", "2px", "important");
 		tweet.style.setProperty(
 			"box-shadow",
-			"0 0 0 3px rgba(255,77,79,0.35)",
+			`0 0 0 3px ${palette.shadow}`,
 			"important",
 		);
-		tweet.style.setProperty("background-color", "rgba(255,77,79,0.12)", "important");
+		tweet.style.setProperty("background-color", palette.background, "important");
 
 		const badge = document.createElement("div");
 		const badgeId = `xcb-badge-${Math.random().toString(36).slice(2, 9)}`;
@@ -1289,7 +1297,7 @@
 		btn.setAttribute("role", "button");
 		btn.href = "javascript:void(0)";
 		btn.innerHTML =
-			'<span class="xcb-icon" style="font-size:22px;line-height:22px;color:#fff;">🚫</span><span class="xcb-label" style="font-size:18px;font-weight:700;">Blocker</span>';
+			'<span class="xcb-icon" style="font-size:22px;line-height:22px;color:#fff;">🚫</span><span class="xcb-label" style="font-size:18px;font-weight:700;">CleanX</span>';
 		btn.style =
 			"display:flex;align-items:center;gap:14px;padding:12px;border-radius:9999px;color:#e7e9ea;text-decoration:none;font-size:17px;font-weight:700;cursor:pointer;max-width:260px;min-width:52px;box-sizing:border-box;";
 		btn.onmouseenter = () => {
@@ -1310,9 +1318,17 @@
 			}
 		};
 		const label = btn.querySelector(".xcb-label");
-		if (label) {
+		const updateLabelVisibility = () => {
+			if (!label) return;
 			label.style.display =
 				(nav.getBoundingClientRect().width || 0) > 80 ? "inline" : "none";
+		};
+		updateLabelVisibility();
+		if (typeof ResizeObserver !== "undefined") {
+			const ro = new ResizeObserver(updateLabelVisibility);
+			ro.observe(nav);
+		} else {
+			window.addEventListener("resize", updateLabelVisibility);
 		}
 		if (btn.parentElement !== parent) {
 			if (moreEntry && moreEntry.parentElement === parent) {
@@ -1593,3 +1609,55 @@
 		"X Country Blocker v5.1 (CLEAN) ready — nothing blocked until you add it",
 	);
 })();
+	function flagPalette(code) {
+		const c = (code || "").toUpperCase();
+		const table = {
+			US: { primary: "#b22234", secondary: "#3c3b6e" },
+			CA: { primary: "#d52b1e", secondary: "#ffffff" },
+			GB: { primary: "#c8102e", secondary: "#012169" },
+			FR: { primary: "#0055a4", secondary: "#ef4135" },
+			DE: { primary: "#000000", secondary: "#d00" },
+			IT: { primary: "#009246", secondary: "#ce2b37" },
+			ES: { primary: "#aa151b", secondary: "#f1bf00" },
+			NL: { primary: "#ae1c28", secondary: "#21468b" },
+			SE: { primary: "#006aa7", secondary: "#fecc00" },
+			NO: { primary: "#ba0c2f", secondary: "#00205b" },
+			FI: { primary: "#003580", secondary: "#ffffff" },
+			DK: { primary: "#c8102e", secondary: "#ffffff" },
+			RU: { primary: "#0039a6", secondary: "#d52b1e" },
+			UA: { primary: "#0057b7", secondary: "#ffd700" },
+			PL: { primary: "#dc143c", secondary: "#ffffff" },
+			CN: { primary: "#de2910", secondary: "#ffde00" },
+			JP: { primary: "#ffffff", secondary: "#bc002d" },
+			KR: { primary: "#003478", secondary: "#c60c30" },
+			AU: { primary: "#00247d", secondary: "#ff0000" },
+			NZ: { primary: "#00247d", secondary: "#ff0000" },
+			BR: { primary: "#009c3b", secondary: "#ffdf00" },
+			MX: { primary: "#006341", secondary: "#ce1126" },
+			AR: { primary: "#74acdf", secondary: "#f6b40e" },
+			IN: { primary: "#ff9933", secondary: "#128807" },
+			SA: { primary: "#006c35", secondary: "#ffffff" },
+			IL: { primary: "#0038b8", secondary: "#ffffff" },
+			IR: { primary: "#239f40", secondary: "#da0000" },
+			TR: { primary: "#e30a17", secondary: "#ffffff" },
+			ZA: { primary: "#007749", secondary: "#ffb612" },
+			NG: { primary: "#008753", secondary: "#ffffff" },
+			KE: { primary: "#006600", secondary: "#b22222" },
+			EG: { primary: "#ce1126", secondary: "#000000" },
+			ID: { primary: "#ce1126", secondary: "#ffffff" },
+			PH: { primary: "#0038a8", secondary: "#ce1126" },
+			SG: { primary: "#e0001b", secondary: "#ffffff" },
+			TH: { primary: "#2d2a4a", secondary: "#a51931" },
+			VN: { primary: "#da251d", secondary: "#ffde00" },
+		};
+		const entry = table[c] || table[(c || "").slice(0, 2)] || {
+			primary: "#ff4d4f",
+			secondary: "#ffffff",
+		};
+		return {
+			primary: entry.primary,
+			secondary: entry.secondary,
+			shadow: `${entry.primary}55`,
+			background: `${entry.secondary}1f`,
+		};
+	}
