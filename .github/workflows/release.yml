@@ -1,0 +1,31 @@
+name: Release CleanX
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build-and-release:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Prepare artifacts
+        run: |
+          mkdir -p dist
+          cp CleanX-user.js dist/CleanX.user.js
+          cp -r extension dist/extension
+          # zip the extension for convenience
+          (cd dist && zip -r CleanX-extension.zip extension)
+      - name: Create Release
+        id: create_release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            dist/CleanX.user.js
+            dist/CleanX-extension.zip
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

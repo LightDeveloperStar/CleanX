@@ -1,0 +1,17 @@
+{
+  "manifest_version": 3,
+  "name": "CleanX",
+  "description": "Filter X/Twitter posts by country, region, or language with optional highlighting.",
+  "version": "1.0.0",
+  "permissions": ["storage"],
+  "content_scripts": [
+    {
+      "matches": [
+        "https://x.com/*",
+        "https://twitter.com/*"
+      ],
+      "js": ["content.js"],
+      "run_at": "document_start"
+    }
+  ]
+}
