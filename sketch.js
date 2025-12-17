@@ -1,30 +1,42 @@
-var oi;
 
 function setup() {
-  createCanvas(400,400)
-oi = createSprite(200,200,50,50);
- 
+  createCanvas(400,400);
+  background(51);
+  box = createSprite(200,200,30,30);
+
 }
 
 function draw() 
 {
-  background(30);
-  if(keyDown("UP_ARROW")){
-    oi.position.y = oi.position.y -2
+
+  // escreva o código para alterar a cor de fundo 
+  // para vermelho quando a seta para direita (RIGHT_ARROW) for pressionada
+  
+  if (keyIsDown(RIGHT_ARROW))
+  {
+    background("red");
+
   }
-  if(keyDown("DOWN_ARROW")){
-    oi.position.y = oi.position.y +2
+
+  if (keyIsDown(LEFT_ARROW)) 
+  {
+    background("blue");
+    
   }
-  if(keyDown("LEFT_ARROW")){
-    oi.position.x = oi.position.x -2
+ 
+    if (keyIsDown(UP_ARROW)) 
+  {
+    background("yellow");
+   
   }
-  if(keyDown("RIGHT_ARROW")){
-    oi.position.x = oi.position.x +2
+
+  if (keyIsDown(DOWN_ARROW)) 
+  {
+    background("green");
   }
+
+
+  
   drawSprites();
-
 }
-
-
-
 
